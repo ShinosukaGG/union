@@ -2482,6 +2482,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "beacon-kit-types"
+version = "0.0.0"
+dependencies = [
+ "beacon-kit-types",
+ "bincode 2.0.1",
+ "cometbft-types",
+ "hex-literal",
+ "prost 0.12.6",
+ "protos",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.12",
+ "unionlabs",
+]
+
+[[package]]
 name = "bech32"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2552,6 +2568,7 @@ dependencies = [
  "ethereum-light-client-types",
  "ibc-union-spec",
  "serde",
+ "tendermint-light-client-types",
  "unionlabs",
 ]
 
@@ -5498,30 +5515,6 @@ dependencies = [
  "fixed-hash 0.8.0",
  "primitive-types 0.12.2",
  "uint",
-]
-
-[[package]]
-name = "ethermint-light-client"
-version = "0.0.0"
-dependencies = [
- "base64 0.21.7",
- "cometbft-types",
- "cosmwasm-std 2.2.2",
- "embed-commit",
- "ethereum-light-client",
- "ethermint-light-client-types",
- "frissitheto",
- "ibc-union-light-client",
- "ibc-union-msg",
- "ics23",
- "lazy_static",
- "serde",
- "serde_json",
- "tendermint-light-client",
- "tendermint-light-client-types",
- "tendermint-verifier",
- "thiserror 2.0.12",
- "unionlabs",
 ]
 
 [[package]]
@@ -9482,34 +9475,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "osmosis-tokenfactory-token-minter"
-version = "0.0.0"
-dependencies = [
- "alloy",
- "cosmwasm-schema 2.2.2",
- "cosmwasm-std 2.2.2",
- "cw-storage-plus 2.0.0",
- "embed-commit",
- "enumorph",
- "ibc-union-spec",
- "prost 0.12.6",
- "protos",
- "thiserror 2.0.12",
- "token-factory-api",
- "ucs03-zkgm-token-minter-api",
- "unionlabs",
-]
-
-[[package]]
-name = "osmosis-tokenfactory-token-owner"
-version = "0.0.0"
-dependencies = [
- "cosmwasm-std 2.2.2",
- "osmosis-tokenfactory-token-minter",
- "token-factory-api",
-]
-
-[[package]]
 name = "ouroboros"
 version = "0.15.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -13063,6 +13028,7 @@ dependencies = [
  "cosmwasm-std 2.2.2",
  "embed-commit",
  "frissitheto",
+ "hex-literal",
  "ibc-union-light-client",
  "ibc-union-msg",
  "ibc-union-spec",
@@ -14111,27 +14077,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ucs06-funded-dispatch"
-version = "0.0.0"
-dependencies = [
- "alloy",
- "cosmwasm-schema 2.2.2",
- "cosmwasm-std 2.2.2",
- "cw-storage-plus 2.0.0",
- "cw20",
- "embed-commit",
- "ethabi",
- "frissitheto",
- "ibc-union-msg",
- "ibc-union-spec",
- "serde",
- "serde-json-wasm 1.0.1",
- "serde-utils",
- "thiserror 2.0.12",
- "unionlabs",
-]
-
-[[package]]
 name = "uint"
 version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -14552,6 +14497,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "voyager-client-bootstrap-module-berachain"
+version = "0.0.0"
+dependencies = [
+ "alloy",
+ "berachain-light-client-types",
+ "embed-commit",
+ "ibc-union-spec",
+ "ics23",
+ "jsonrpsee",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.12",
+ "tokio",
+ "tracing",
+ "unionlabs",
+ "voyager-message",
+ "voyager-vm",
+]
+
+[[package]]
 name = "voyager-client-bootstrap-module-bob"
 version = "0.0.0"
 dependencies = [
@@ -14763,6 +14728,23 @@ dependencies = [
  "embed-commit",
  "ethereum-light-client-types",
  "jsonrpsee",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "unionlabs",
+ "voyager-message",
+ "voyager-vm",
+]
+
+[[package]]
+name = "voyager-client-module-berachain"
+version = "0.0.0"
+dependencies = [
+ "berachain-light-client-types",
+ "embed-commit",
+ "jsonrpsee",
+ "macros",
  "serde",
  "serde_json",
  "tokio",
@@ -15010,6 +14992,7 @@ dependencies = [
  "enumorph",
  "ethereum-light-client-types",
  "futures",
+ "ibc-union-spec",
  "ics23",
  "jsonrpsee",
  "macros",

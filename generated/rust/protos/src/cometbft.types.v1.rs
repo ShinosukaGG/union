@@ -72,6 +72,15 @@ pub enum BlockIdFlag {
     Commit = 2,
     /// Voted for nil
     Nil = 3,
+    /// Aggregated commit
+    /// Voted for the block and contains aggregated signature.
+    AggCommit = 4,
+    /// Voted for the block.
+    AggCommitAbsent = 5,
+    /// Voted for nil and contains aggregated signature.
+    AggNil = 6,
+    /// Voted for nil.
+    AggNilAbsent = 7,
 }
 impl BlockIdFlag {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -84,6 +93,10 @@ impl BlockIdFlag {
             BlockIdFlag::Absent => "BLOCK_ID_FLAG_ABSENT",
             BlockIdFlag::Commit => "BLOCK_ID_FLAG_COMMIT",
             BlockIdFlag::Nil => "BLOCK_ID_FLAG_NIL",
+            BlockIdFlag::AggCommit => "BLOCK_ID_FLAG_AGG_COMMIT",
+            BlockIdFlag::AggCommitAbsent => "BLOCK_ID_FLAG_AGG_COMMIT_ABSENT",
+            BlockIdFlag::AggNil => "BLOCK_ID_FLAG_AGG_NIL",
+            BlockIdFlag::AggNilAbsent => "BLOCK_ID_FLAG_AGG_NIL_ABSENT",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
@@ -93,6 +106,10 @@ impl BlockIdFlag {
             "BLOCK_ID_FLAG_ABSENT" => Some(Self::Absent),
             "BLOCK_ID_FLAG_COMMIT" => Some(Self::Commit),
             "BLOCK_ID_FLAG_NIL" => Some(Self::Nil),
+            "BLOCK_ID_FLAG_AGG_COMMIT" => Some(Self::AggCommit),
+            "BLOCK_ID_FLAG_AGG_COMMIT_ABSENT" => Some(Self::AggCommitAbsent),
+            "BLOCK_ID_FLAG_AGG_NIL" => Some(Self::AggNil),
+            "BLOCK_ID_FLAG_AGG_NIL_ABSENT" => Some(Self::AggNilAbsent),
             _ => None,
         }
     }
@@ -710,6 +727,7 @@ impl ::prost::Name for AbciParams {
 pub struct Evidence {
     /// The type of evidence.
     #[prost(oneof = "evidence::Sum", tags = "1, 2")]
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub sum: ::core::option::Option<evidence::Sum>,
 }
 /// Nested message and enum types in `Evidence`.
@@ -717,10 +735,13 @@ pub mod evidence {
     /// The type of evidence.
     #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
+    #[cfg_attr(feature = "serde", serde(tag = "type", content = "value"))]
     pub enum Sum {
         #[prost(message, tag = "1")]
+        #[serde(rename = "tendermint/DuplicateVoteEvidence")]
         DuplicateVoteEvidence(super::DuplicateVoteEvidence),
         #[prost(message, tag = "2")]
+        #[serde(rename = "tendermint/LightClientAttackEvidence")]
         LightClientAttackEvidence(super::LightClientAttackEvidence),
     }
 }
@@ -804,24 +825,6 @@ pub struct Block {
 }
 impl ::prost::Name for Block {
     const NAME: &'static str = "Block";
-    const PACKAGE: &'static str = "cometbft.types.v1";
-    fn full_name() -> ::prost::alloc::string::String {
-        ::prost::alloc::format!("cometbft.types.v1.{}", Self::NAME)
-    }
-}
-/// EventDataRoundState is emitted with each new round step.
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct EventDataRoundState {
-    #[prost(int64, tag = "1")]
-    pub height: i64,
-    #[prost(int32, tag = "2")]
-    pub round: i32,
-    #[prost(string, tag = "3")]
-    pub step: ::prost::alloc::string::String,
-}
-impl ::prost::Name for EventDataRoundState {
-    const NAME: &'static str = "EventDataRoundState";
     const PACKAGE: &'static str = "cometbft.types.v1";
     fn full_name() -> ::prost::alloc::string::String {
         ::prost::alloc::format!("cometbft.types.v1.{}", Self::NAME)
@@ -933,6 +936,24 @@ pub struct CanonicalVoteExtension {
 }
 impl ::prost::Name for CanonicalVoteExtension {
     const NAME: &'static str = "CanonicalVoteExtension";
+    const PACKAGE: &'static str = "cometbft.types.v1";
+    fn full_name() -> ::prost::alloc::string::String {
+        ::prost::alloc::format!("cometbft.types.v1.{}", Self::NAME)
+    }
+}
+/// EventDataRoundState is emitted with each new round step.
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct EventDataRoundState {
+    #[prost(int64, tag = "1")]
+    pub height: i64,
+    #[prost(int32, tag = "2")]
+    pub round: i32,
+    #[prost(string, tag = "3")]
+    pub step: ::prost::alloc::string::String,
+}
+impl ::prost::Name for EventDataRoundState {
+    const NAME: &'static str = "EventDataRoundState";
     const PACKAGE: &'static str = "cometbft.types.v1";
     fn full_name() -> ::prost::alloc::string::String {
         ::prost::alloc::format!("cometbft.types.v1.{}", Self::NAME)
