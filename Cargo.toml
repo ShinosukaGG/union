@@ -149,6 +149,8 @@ members = [
   "cosmwasm/ucs00-pingpong",
   "cosmwasm/ibc-union/app/ucs00-pingpong",
   "cosmwasm/ibc-union/app/ucs03-zkgm",
+  "cosmwasm/osmosis-tokenfactory-token-minter",
+  "cosmwasm/osmosis-tokenfactory-token-owner",
 
   # mpc
   "mpc/shared",

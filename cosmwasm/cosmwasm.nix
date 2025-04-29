@@ -142,7 +142,7 @@ _: {
             "berachain"
             "ethereum"
             "trusted-mpt"
-            "ethermint"
+            # "ethermint"
             "tendermint-bls"
             "movement"
             "state-lens-ics23-mpt"
@@ -169,7 +169,7 @@ _: {
             "berachain"
             "ethereum"
             "trusted-mpt"
-            "ethermint"
+            # "ethermint"
             "tendermint-bls"
             "movement"
             "state-lens-ics23-mpt"
@@ -404,11 +404,11 @@ _: {
           dir = "trusted-mpt";
           client-type = "trusted/evm/mpt";
         }
-        {
-          name = "ethermint";
-          dir = "ethermint";
-          client-type = "ethermint";
-        }
+        # {
+        #   name = "ethermint";
+        #   dir = "ethermint";
+        #   client-type = "ethermint";
+        # }
         {
           name = "tendermint";
           dir = "tendermint";
