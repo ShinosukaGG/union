@@ -234,6 +234,7 @@ pub fn parse_revision_number(chain_id: &str) -> Option<u64> {
         .map(|height_str| height_str.parse().ok())?
 }
 
+#[allow(clippy::too_many_arguments)]
 pub fn verify_header<V: Verification>(
     mut client_state: ClientStateV1,
     consensus_state: ConsensusState,
@@ -275,8 +276,7 @@ pub fn verify_header<V: Verification>(
         return Err(Error::SignedHeaderHeightMustBeMoreRecent {
             signed_height,
             trusted_height: header.trusted_height.height(),
-        }
-        .into());
+        });
     }
 
     // FIXME: unionlabs is tied to cosmwasm <2, the TryFrom impl can't be used
