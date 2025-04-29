@@ -2555,7 +2555,6 @@ dependencies = [
  "serde",
  "serde_json",
  "tendermint-light-client",
- "tendermint-light-client-types",
  "tendermint-verifier",
  "thiserror 2.0.12",
  "unionlabs",

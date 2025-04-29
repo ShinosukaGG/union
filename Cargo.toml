@@ -328,8 +328,8 @@ ethereum-sync-protocol       = { path = "lib/ethereum-sync-protocol", default-fe
 ethereum-sync-protocol-types = { path = "lib/ethereum-sync-protocol-types", default-features = false }
 evm-storage-verifier         = { path = "lib/evm-storage-verifier", default-features = false }
 
+beacon-kit-types             = { path = "lib/beacon-kit-types", default-features = false }
 berachain-light-client-types = { path = "lib/berachain-light-client-types", default-features = false }
-beacon-kit-types              = { path = "lib/beacon-kit-types", default-features = false }
 
 scroll-api   = { path = "lib/scroll-api", default-features = false }
 scroll-codec = { path = "lib/scroll-codec", default-features = false }
