@@ -3,9 +3,9 @@ use anyhow::Result;
 use clap::{Args, Subcommand};
 use serde::Serialize;
 use ucs03_zkgm::com::{
-    FungibleAssetMetadata, FungibleAssetOrder, FungibleAssetOrderV2, Instruction,
-    FUNGIBLE_ASSET_METADATA_TYPE_PREIMAGE, INSTR_VERSION_1, INSTR_VERSION_2,
-    OP_FUNGIBLE_ASSET_ORDER,
+    Batch, FungibleAssetMetadata, FungibleAssetOrder, FungibleAssetOrderV2, Instruction,
+    FUNGIBLE_ASSET_METADATA_TYPE_PREIMAGE, INSTR_VERSION_0, INSTR_VERSION_1, INSTR_VERSION_2,
+    OP_BATCH, OP_FUNGIBLE_ASSET_ORDER,
 };
 use unionlabs::primitives::{Bytes, H256, U256};
 
@@ -129,7 +129,7 @@ impl Cmd {
                     }
                 };
 
-                let instruction: Bytes = Instruction {
+                let instruction = Instruction {
                     version: INSTR_VERSION_2,
                     opcode: OP_FUNGIBLE_ASSET_ORDER,
                     operand: FungibleAssetOrderV2 {
@@ -144,11 +144,21 @@ impl Cmd {
                     }
                     .abi_encode_params()
                     .into(),
+                };
+
+                let batch: Bytes = Instruction {
+                    version: INSTR_VERSION_0,
+                    opcode: OP_BATCH,
+                    operand: Batch {
+                        instructions: vec![instruction.clone(), instruction],
+                    }
+                    .abi_encode_params()
+                    .into(),
                 }
                 .abi_encode_params()
                 .into();
 
-                println!("{instruction}");
+                println!("{batch}");
             }
         }
 
