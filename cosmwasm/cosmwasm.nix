@@ -102,7 +102,7 @@ _: {
           ucs03_type = "cw20";
           bech32_prefix = "union";
           apps = {
-            ucs03 = ucs03-configs.cw20 // {
+            ucs03 = (ucs03-configs.cw20 cw20-base) // {
               rate_limit_disabled = true;
             };
           };
@@ -122,7 +122,7 @@ _: {
             type = "feemarket";
           };
           apps = {
-            ucs03 = ucs03-configs.cw20 // {
+            ucs03 = (ucs03-configs.cw20 cw20-base) // {
               rate_limit_disabled = true;
             };
           };
@@ -154,7 +154,7 @@ _: {
             gas_multiplier = 1.4;
           };
           apps = {
-            ucs03 = ucs03-configs.cw20;
+            ucs03 = (ucs03-configs.cw20 cw20-base);
           };
           bech32_prefix = "union";
           lightclients = [
@@ -184,7 +184,7 @@ _: {
             max_gas = 10000000;
           };
           apps = {
-            ucs03 = ucs03-configs.cw20 // {
+            ucs03 = (ucs03-configs.cw20 cw20-base) // {
               rate_limit_disabled = true;
             };
           };
@@ -281,7 +281,7 @@ _: {
             max_gas = 10000000;
           };
           apps = {
-            ucs03 = ucs03-configs.cw20 // {
+            ucs03 = (ucs03-configs.cw20 cw20-base) // {
               rate_limit_disabled = true;
             };
           };
@@ -308,7 +308,7 @@ _: {
             max_gas = 10000000;
           };
           apps = {
-            ucs03 = ucs03-configs.cw20;
+            ucs03 = (ucs03-configs.cw20 cw20-base);
           };
           bech32_prefix = "bbn";
           lightclients = [
@@ -331,7 +331,7 @@ _: {
             max_gas = 60000000;
           };
           apps = {
-            ucs03 = ucs03-configs.cw20 // {
+            ucs03 = (ucs03-configs.cw20 cw20-base) // {
               rate_limit_disabled = true;
             };
           };
@@ -358,7 +358,7 @@ _: {
             max_gas = 60000000;
           };
           apps = {
-            ucs03 = ucs03-configs.cw20 // {
+            ucs03 = (ucs03-configs.cw20 cw20-base) // {
               rate_limit_disabled = true;
             };
           };
@@ -383,7 +383,7 @@ _: {
             max_gas = 60000000;
           };
           apps = {
-            ucs03 = ucs03-configs.cw20 // {
+            ucs03 = (ucs03-configs.cw20 cw20-base) // {
               rate_limit_disabled = true;
             };
           };
@@ -492,14 +492,14 @@ _: {
       };
 
       ucs03-configs = {
-        cw20 = {
+        cw20 = cw20-impl: {
           type = "cw20";
           path = "${ucs03-zkgm.release}";
           cw_account_path = "${cw-account.release}";
           token_minter_path = "${cw20-token-minter.release}";
           token_minter_config = {
             cw20 = {
-              cw20_base = "${cw20-base.release}";
+              cw20_base = "${cw20-impl.release}";
             };
           };
           rate_limit_disabled = false;
