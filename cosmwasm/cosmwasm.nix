@@ -281,7 +281,7 @@ _: {
             max_gas = 10000000;
           };
           apps = {
-            ucs03 = (ucs03-configs.cw20 cw20-base) // {
+            ucs03 = (ucs03-configs.cw20 cw20-wrapped-tokenfactory) // {
               rate_limit_disabled = true;
             };
           };
@@ -499,7 +499,7 @@ _: {
           token_minter_path = "${cw20-token-minter.release}";
           token_minter_config = {
             cw20 = {
-              cw20_base = "${cw20-impl.release}";
+              cw20_impl = "${cw20-impl.release}";
             };
           };
           rate_limit_disabled = false;
@@ -618,6 +618,30 @@ _: {
               --rpc-url ${rpc_url} \
               --contract ${(getDeployment ucs04-chain-id).core.address} \
               ${mk-gas-args gas_config} "$@"
+          '';
+        };
+
+      migrate-contract =
+        {
+          name,
+          rpc_url,
+          gas_config,
+          private_key,
+          ...
+        }:
+        pkgs.writeShellApplication {
+          name = "${name}-migrate-contract";
+          runtimeInputs = [ cosmwasm-deployer ];
+          text = ''
+            PRIVATE_KEY=${private_key} \
+            RUST_LOG=info \
+              cosmwasm-deployer \
+              migrate \
+              --rpc-url ${rpc_url} \
+              --address "''${1:?address must be set (first argument to this script))}" \
+              --new-bytecode "''${2:?new bytecode path must be set (second argument to this script))}" \
+              ${mk-gas-args gas_config} \
+              "''${@:3}"
           '';
         };
 
@@ -1017,6 +1041,7 @@ _: {
                       finalize-deployment = finalize-deployment chain;
                       get-git-rev = get-git-rev chain;
                       whitelist-relayers = whitelist-relayers chain;
+                      migrate-contract = migrate-contract chain;
                     }
                     // (chain-migration-scripts chain)
                   );
