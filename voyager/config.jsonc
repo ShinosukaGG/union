@@ -3,17 +3,6 @@
     "state": [
       {
         "enabled": true,
-        "path": "./target/debug/voyager-state-module-cosmos-sdk",
-        "info": {
-          "chain_id": "union-devnet-1",
-          "ibc_spec_id": "1.0.0"
-        },
-        "config": {
-          "rpc_url": "http://localhost:26657"
-        }
-      },
-      {
-        "enabled": true,
         "path": "./target/debug/voyager-state-module-cosmos-sdk-union",
         "info": {
           "chain_id": "union-devnet-1",
@@ -26,14 +15,15 @@
       },
       {
         "enabled": true,
-        "path": "./target/debug/voyager-state-module-ethereum",
+        "path": "./target/debug/voyager-state-module-sui",
         "info": {
-          "chain_id": "32382",
+          "chain_id": "4c78adac",
           "ibc_spec_id": "ibc-union"
         },
         "config": {
-          "ibc_handler_address": "0xed2af2aD7FE0D92011b26A2e5D1B4dC7D12A47C5",
-          "rpc_url": "http://localhost:8545"
+          "rpc_url": "https://fullnode.testnet.sui.io:443",
+          "ibc_contract": "0xd127df8c4158125c2e28ad477df0788f2326ccea2584cb8e6963ff3dbfd199dd",
+          "ibc_store": "0x91e305523124216f566da4d407184061b0cc7de4abc9955ec3259ff238f081ea"
         }
       }
     ],
@@ -52,14 +42,15 @@
       },
       {
         "enabled": true,
-        "path": "./target/debug/voyager-proof-module-ethereum",
+        "path": "./target/debug/voyager-proof-module-sui",
         "info": {
-          "chain_id": "32382",
+          "chain_id": "4c78adac",
           "ibc_spec_id": "ibc-union"
         },
         "config": {
-          "ibc_handler_address": "0xed2af2aD7FE0D92011b26A2e5D1B4dC7D12A47C5",
-          "rpc_url": "http://localhost:8545"
+          "rpc_url": "https://fullnode.testnet.sui.io:443",
+          "ibc_commitments_object_id": "0xbbccabd54ffd2c77f0320f58b076a035e6d3714080ffdf4c4a683b4d5ce8c986",
+          "sui_object_store_rpc_url": "https://checkpoints.testnet.sui.io/"
         }
       }
     ],
@@ -77,29 +68,15 @@
       },
       {
         "enabled": true,
-        "path": "./target/debug/voyager-finality-module-trusted-evm",
+        "path": "./target/debug/voyager-finality-module-sui",
         "info": {
-          "chain_id": "32382",
-          "consensus_type": "trusted/evm"
+          "chain_id": "4c78adac",
+          "consensus_type": "sui"
         },
         "config": {
-          "rpc_url": "http://localhost:8545",
-          "finality_lag": 1
+          "rpc_url": "https://fullnode.testnet.sui.io:443"
         }
       }
-      // {
-      //   "enabled": true,
-      //   "path": "./target/debug/voyager-consensus-module-ethereum",
-      //   "info": {
-      //     "chain_id": "32382",
-      //     "consensus_type": "ethereum"
-      //   },
-      //   "config": {
-      //     "chain_spec": "minimal",
-      //     "rpc_url": "http://localhost:8545",
-      //     "beacon_rpc_url": "http://localhost:9596"
-      //   }
-      // }
     ],
     "client": [
       {
@@ -108,46 +85,16 @@
         "info": {
           "client_type": "cometbls",
           "consensus_type": "cometbls",
-          "ibc_interface": "ibc-solidity",
+          "ibc_interface": "ibc-move/sui",
           "ibc_spec_id": "ibc-union"
         }
       },
       {
         "enabled": true,
-        "path": "./target/debug/voyager-client-module-trusted-mpt",
+        "path": "./target/debug/voyager-client-module-sui",
         "info": {
-          "client_type": "trusted/evm/mpt",
-          "consensus_type": "trusted/evm",
-          "ibc_interface": "ibc-cosmwasm",
-          "ibc_spec_id": "ibc-union"
-        }
-      },
-      {
-        "enabled": true,
-        "path": "./target/debug/voyager-client-module-cometbls",
-        "info": {
-          "client_type": "cometbls",
-          "consensus_type": "cometbls",
-          "ibc_interface": "ibc-move/aptos",
-          "ibc_spec_id": "ibc-union"
-        }
-      },
-      {
-        "enabled": true,
-        "path": "./target/debug/voyager-client-module-cometbls",
-        "info": {
-          "client_type": "cometbls",
-          "consensus_type": "cometbls",
-          "ibc_interface": "ibc-go-v8/08-wasm",
-          "ibc_spec_id": "ibc-union"
-        }
-      },
-      {
-        "enabled": true,
-        "path": "./target/debug/voyager-client-module-ethereum",
-        "info": {
-          "client_type": "ethereum",
-          "consensus_type": "ethereum",
+          "client_type": "sui",
+          "consensus_type": "sui",
           "ibc_interface": "ibc-cosmwasm",
           "ibc_spec_id": "ibc-union"
         }
@@ -168,31 +115,19 @@
       },
       {
         "config": {
-          "ibc_handler_address": "0xed2af2aD7FE0D92011b26A2e5D1B4dC7D12A47C5",
-          "rpc_url": "http://localhost:8545",
-          "private_key": "0x23312AE62C46C1F05DE7A772C1DD74951009BFCD08B47946E497468DEA6D7008"
+          "rpc_url": "https://fullnode.testnet.sui.io:443",
+          "ibc_store": "0x91e305523124216f566da4d407184061b0cc7de4abc9955ec3259ff238f081ea",
+          "ibc_contract": "0xd127df8c4158125c2e28ad477df0788f2326ccea2584cb8e6963ff3dbfd199dd",
+          "sui_object_store_rpc_url": "https://checkpoints.testnet.sui.io/",
+          "ibc_commitments_object_id": "0xbbccabd54ffd2c77f0320f58b076a035e6d3714080ffdf4c4a683b4d5ce8c986"
         },
         "enabled": true,
         "info": {
-          "chain_id": "32382",
-          "client_type": "trusted/evm/mpt"
+          "chain_id": "4c78adac",
+          "client_type": "sui"
         },
-        "path": "./target/debug/voyager-client-bootstrap-module-trusted-mpt"
+        "path": "./target/debug/voyager-client-bootstrap-module-sui"
       }
-      // {
-      //   "config": {
-      //     "ibc_handler_address": "0xed2af2aD7FE0D92011b26A2e5D1B4dC7D12A47C5",
-      //     "rpc_url": "http://localhost:8545",
-      //     "chain_spec": "minimal",
-      //     "beacon_rpc_url": "http://localhost:9596"
-      //   },
-      //   "enabled": true,
-      //   "info": {
-      //     "chain_id": "32382",
-      //     "client_type": "ethereum"
-      //   },
-      //   "path": "./target/debug/voyager-client-bootstrap-module-ethereum"
-      // }
     ]
   },
   "plugins": [
@@ -209,11 +144,11 @@
     },
     {
       "enabled": true,
-      "path": "./target/debug/voyager-event-source-plugin-ethereum",
+      "path": "./target/debug/voyager-event-source-plugin-sui",
       "config": {
-        "chain_id": "32382",
-        "ibc_handler_address": "0xed2af2aD7FE0D92011b26A2e5D1B4dC7D12A47C5",
-        "rpc_url": "http://localhost:8545"
+        "chain_id": "4c78adac",
+        "rpc_url": "https://fullnode.testnet.sui.io",
+        "ibc_contract": "0xb2126b86bfe879860dbbe301b674bfd5da0a59e4bdd1b57fd92bac5ac18d19d3"
       }
     },
     {
@@ -232,7 +167,7 @@
             }
           ]
         },
-        "max_tx_size": 500000,
+        "max_tx_size": 5000000,
         "gas_config": {
           "type": "feemarket",
           "config": {
@@ -245,23 +180,26 @@
     },
     {
       "enabled": true,
-      "path": "./target/debug/voyager-transaction-plugin-ethereum",
+      "path": "./target/debug/voyager-transaction-plugin-sui",
       "config": {
-        "gas_multiplier": "2",
-        "chain_id": "32382",
-        "ibc_handler_address": "0xed2af2aD7FE0D92011b26A2e5D1B4dC7D12A47C5",
-        "multicall_address": "0x84c4c2ee43ccfd523af9f78740256e0f60d38068",
+        "chain_id": "4c78adac",
+        "ibc_contract": "0xd127df8c4158125c2e28ad477df0788f2326ccea2584cb8e6963ff3dbfd199dd",
+        "ibc_store": "0x91e305523124216f566da4d407184061b0cc7de4abc9955ec3259ff238f081ea",
         "keyring": {
-          "name": "ethereum-devnet",
+          "name": "sui-testnet",
           "keys": [
             {
               "type": "raw",
-              "name": "dev-key0",
-              "key": "0x4e9444a6efd6d42725a250b650a781da2737ea308c839eaccb0f7f3dbd2fea77"
+              "name": "alice",
+              "key": "0x737569707269766B6579317171667A6B74687377376E796839636B3467633261766777396D6B736C683664706464356D77726E6C7937346D7378336D666D777A7A716A787A67"
             }
           ]
         },
-        "rpc_url": "http://localhost:8545"
+        "zkgm_config": {
+          "wrapped_token_to_t": "0xd88c2449eddab6ecc0298c272bf059ea8dcf252f5a79824e52394bfcb8597438"
+        },
+        "rpc_url": "https://fullnode.testnet.sui.io",
+        "graphql_url": "https://sui-testnet.mystenlabs.com/graphql"
       }
     },
     {
@@ -283,7 +221,7 @@
       "enabled": true,
       "path": "./target/debug/voyager-plugin-transaction-batch",
       "config": {
-        "chain_id": "32382",
+        "chain_id": "4c78adac",
         "client_configs": {
           "min_batch_size": 1,
           "max_batch_size": 5,
@@ -300,30 +238,22 @@
       "config": {
         "chain_id": "union-devnet-1",
         "rpc_url": "http://localhost:26657",
-        "prover_endpoints": ["https://galois.testnet-9.union.build:443"]
+        "prover_endpoints": [
+          "http://127.0.0.1:9999"
+        ]
       }
     },
     {
       "enabled": true,
-      "path": "./target/debug/voyager-client-update-plugin-trusted-mpt",
+      "path": "./target/debug/voyager-client-update-plugin-sui",
       "config": {
-        "chain_id": "32382",
-        "ibc_handler_address": "0xed2af2aD7FE0D92011b26A2e5D1B4dC7D12A47C5",
-        "rpc_url": "http://localhost:8545",
-        "private_key": "0x23312AE62C46C1F05DE7A772C1DD74951009BFCD08B47946E497468DEA6D7008"
+        "chain_id": "4c78adac",
+        "ibc_contract": "0xd127df8c4158125c2e28ad477df0788f2326ccea2584cb8e6963ff3dbfd199dd",
+        "rpc_url": "https://fullnode.testnet.sui.io:443",
+        "sui_object_store_rpc_url": "https://checkpoints.testnet.sui.io/",
+        "graphql_url": "https://sui-testnet.mystenlabs.com/graphql"
       }
     }
-    // {
-    //   "enabled": true,
-    //   "path": "./target/debug/voyager-client-update-plugin-ethereum",
-    //   "config": {
-    //     "chain_id": "32382",
-    //     "chain_spec": "minimal",
-    //     "ibc_handler_address": "0xed2af2aD7FE0D92011b26A2e5D1B4dC7D12A47C5",
-    //     "rpc_url": "http://localhost:8545",
-    //     "beacon_rpc_url": "http://localhost:9596"
-    //   }
-    // }
   ],
   "voyager": {
     "cache": {
@@ -337,7 +267,7 @@
       "nanos": 0,
       "secs": 60
     },
-    "num_workers": 20,
+    "num_workers": 30,
     "queue": {
       "database_url": "postgres://postgres:postgrespassword@127.0.0.1:5432/default",
       "idle_timeout": null,
