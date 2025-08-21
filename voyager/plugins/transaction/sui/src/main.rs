@@ -1,5 +1,5 @@
 use std::{
-    collections::{hash_map::Entry, HashMap, HashSet, VecDeque},
+    collections::{hash_map::Entry, HashMap, VecDeque},
     fmt::Debug,
     panic::AssertUnwindSafe,
     str::FromStr,
@@ -47,7 +47,7 @@ use sui_sdk::{
 };
 use tracing::{debug, info, instrument};
 use ucs03_zkgm::com::{
-    Batch, FungibleAssetMetadata, FungibleAssetOrderV2, Instruction, ZkgmPacket,
+    Batch, FungibleAssetMetadata, FungibleAssetOrderV2, ZkgmPacket,
     FUNGIBLE_ASSET_METADATA_TYPE_IMAGE, FUNGIBLE_ASSET_METADATA_TYPE_PREIMAGE, OP_BATCH,
     OP_FUNGIBLE_ASSET_ORDER,
 };
@@ -61,7 +61,7 @@ use voyager_sdk::{
     message::{data::Data, PluginMessage, VoyagerMessage},
     plugin::Plugin,
     primitives::ChainId,
-    rpc::{json_rpc_error_to_queue_error, types::PluginInfo, PluginServer},
+    rpc::{types::PluginInfo, PluginServer},
     serde_json::{self, json},
     vm::{call, noop, pass::PassResult, Op, Visit},
     DefaultCmd, ExtensionsExt, VoyagerClient,
@@ -279,7 +279,7 @@ impl PluginServer<ModuleCall, ModuleCallback> for Module {
 #[allow(clippy::type_complexity)]
 async fn process_msgs(
     module: &Module,
-    voyager_client: &VoyagerClient,
+    _voyager_client: &VoyagerClient,
     ptb: &mut ProgrammableTransactionBuilder,
     pk: &Arc<SuiKeyPair>,
     msgs: Vec<Datagram>,
