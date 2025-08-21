@@ -10,11 +10,22 @@ pub enum Stake {
     V0(StakeV0),
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum StakeShape {
+    V0,
+}
+
 impl Stake {
     pub(crate) fn decode(version: u8, operand: impl AsRef<[u8]>) -> Result<Self> {
         match version {
             INSTR_VERSION_0 => StakeV0::decode(operand).map(Into::into),
             invalid => Err(format!("invalid stake version: {invalid}"))?,
+        }
+    }
+
+    pub(crate) fn shape(&self) -> StakeShape {
+        match self {
+            Stake::V0(_) => StakeShape::V0,
         }
     }
 }

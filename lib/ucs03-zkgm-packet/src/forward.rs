@@ -10,11 +10,22 @@ pub enum Forward {
     V0(ForwardV0),
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ForwardShape {
+    V0,
+}
+
 impl Forward {
     pub(crate) fn decode(version: u8, operand: impl AsRef<[u8]>) -> Result<Self> {
         match version {
             INSTR_VERSION_0 => ForwardV0::decode(operand).map(Into::into),
             invalid => Err(format!("invalid forward version: {invalid}"))?,
+        }
+    }
+
+    pub(crate) fn shape(&self) -> ForwardShape {
+        match self {
+            Forward::V0(_) => ForwardShape::V0,
         }
     }
 }

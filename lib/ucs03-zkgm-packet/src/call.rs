@@ -10,11 +10,22 @@ pub enum Call {
     V0(CallV0),
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CallShape {
+    V0,
+}
+
 impl Call {
     pub(crate) fn decode(version: u8, operand: impl AsRef<[u8]>) -> Result<Self> {
         match version {
             INSTR_VERSION_0 => CallV0::decode(operand).map(Into::into),
             invalid => Err(format!("invalid call version: {invalid}"))?,
+        }
+    }
+
+    pub(crate) fn shape(&self) -> CallShape {
+        match self {
+            Call::V0(_) => CallShape::V0,
         }
     }
 }

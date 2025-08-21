@@ -8,7 +8,7 @@ use ucs03_zkgm::com::{
 };
 use unionlabs_primitives::{Bytes, U256};
 
-use super::Result;
+use crate::Result;
 
 #[derive(Debug, Clone, PartialEq, Eq, Enumorph)]
 pub enum TokenOrder {
@@ -19,6 +19,15 @@ pub enum TokenOrder {
     V2(TokenOrderV2),
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum TokenOrderShape {
+    #[deprecated]
+    V0,
+    #[deprecated(since = "TBD")]
+    V1,
+    V2,
+}
+
 impl TokenOrder {
     pub(crate) fn decode(version: u8, operand: impl AsRef<[u8]>) -> Result<Self> {
         match version {
@@ -26,6 +35,14 @@ impl TokenOrder {
             INSTR_VERSION_1 => TokenOrderV1::decode(operand).map(Into::into),
             INSTR_VERSION_2 => TokenOrderV2::decode(operand).map(Into::into),
             invalid => Err(format!("invalid token order version: {invalid}"))?,
+        }
+    }
+
+    pub(crate) fn shape(&self) -> TokenOrderShape {
+        match self {
+            TokenOrder::V0(_) => TokenOrderShape::V0,
+            TokenOrder::V1(_) => TokenOrderShape::V1,
+            TokenOrder::V2(_) => TokenOrderShape::V2,
         }
     }
 }

@@ -10,11 +10,22 @@ pub enum Unstake {
     V0(UnstakeV0),
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum UnstakeShape {
+    V0,
+}
+
 impl Unstake {
     pub(crate) fn decode(version: u8, operand: impl AsRef<[u8]>) -> Result<Self> {
         match version {
             INSTR_VERSION_0 => UnstakeV0::decode(operand).map(Into::into),
             invalid => Err(format!("invalid unstake version: {invalid}"))?,
+        }
+    }
+
+    pub(crate) fn shape(&self) -> UnstakeShape {
+        match self {
+            Unstake::V0(_) => UnstakeShape::V0,
         }
     }
 }

@@ -10,11 +10,22 @@ pub enum WithdrawStake {
     V0(WithdrawStakeV0),
 }
 
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum WithdrawStakeShape {
+    V0,
+}
+
 impl WithdrawStake {
     pub(crate) fn decode(version: u8, operand: impl AsRef<[u8]>) -> Result<Self> {
         match version {
             INSTR_VERSION_0 => WithdrawStakeV0::decode(operand).map(Into::into),
             invalid => Err(format!("invalid withdraw stake version: {invalid}"))?,
+        }
+    }
+
+    pub(crate) fn shape(&self) -> WithdrawStakeShape {
+        match self {
+            WithdrawStake::V0(_) => WithdrawStakeShape::V0,
         }
     }
 }

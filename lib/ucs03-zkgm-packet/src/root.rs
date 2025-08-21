@@ -6,8 +6,15 @@ use ucs03_zkgm::com::{
 };
 
 use crate::{
-    batch::Batch, call::Call, forward::Forward, stake::Stake, token_order::TokenOrder,
-    unstake::Unstake, withdraw_rewards::WithdrawRewards, withdraw_stake::WithdrawStake, Result,
+    batch::{Batch, BatchShape},
+    call::{Call, CallShape},
+    forward::{Forward, ForwardShape},
+    stake::{Stake, StakeShape},
+    token_order::{TokenOrder, TokenOrderShape},
+    unstake::{Unstake, UnstakeShape},
+    withdraw_rewards::{WithdrawRewards, WithdrawRewardsShape},
+    withdraw_stake::{WithdrawStake, WithdrawStakeShape},
+    Result,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq, Enumorph)]
@@ -29,6 +36,21 @@ impl Root {
         Self::from_raw(instruction)
     }
 
+    pub fn shape(&self) -> RootShape {
+        match self {
+            Root::Batch(batch) => RootShape::Batch(batch.shape()),
+            Root::TokenOrder(token_order) => RootShape::TokenOrder(token_order.shape()),
+            Root::Call(call) => RootShape::Call(call.shape()),
+            Root::Forward(forward) => RootShape::Forward(forward.shape()),
+            Root::Stake(stake) => RootShape::Stake(stake.shape()),
+            Root::Unstake(unstake) => RootShape::Unstake(unstake.shape()),
+            Root::WithdrawStake(withdraw_stake) => RootShape::WithdrawStake(withdraw_stake.shape()),
+            Root::WithdrawRewards(withdraw_rewards) => {
+                RootShape::WithdrawRewards(withdraw_rewards.shape())
+            }
+        }
+    }
+
     pub(crate) fn from_raw(instruction: ucs03_zkgm::com::Instruction) -> Result<Root> {
         match instruction.opcode {
             OP_FORWARD => Forward::decode(instruction.version, instruction.operand).map(Into::into),
@@ -48,4 +70,16 @@ impl Root {
             invalid => Err(format!("invalid opcode: {invalid}").into()),
         }
     }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Enumorph)]
+pub enum RootShape {
+    Batch(BatchShape),
+    TokenOrder(TokenOrderShape),
+    Call(CallShape),
+    Forward(ForwardShape),
+    Stake(StakeShape),
+    Unstake(UnstakeShape),
+    WithdrawStake(WithdrawStakeShape),
+    WithdrawRewards(WithdrawRewardsShape),
 }
