@@ -727,15 +727,15 @@ fn acknowledge_packet(
         zkgm_packet.path,
         zkgm_packet.instruction,
         ack.tag == TAG_ACK_SUCCESS,
-        Vec::from(ack.inner_ack).into(),
+        ack.inner_ack.into(),
     )
 }
 
-#[allow(clippy::too_many_arguments)]
 /// Handles the internal acknowledgement logic for a packet.
 /// Processes acknowledgements based on instruction type and success status.
 /// For successful acknowledgements, executes the appropriate success handlers.
 /// For failed acknowledgements, executes refund/cleanup actions.
+#[allow(clippy::too_many_arguments)]
 fn acknowledge_internal(
     mut deps: DepsMut,
     env: Env,

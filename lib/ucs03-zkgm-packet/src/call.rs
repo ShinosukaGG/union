@@ -1,6 +1,6 @@
 use alloy_sol_types::SolType;
 use enumorph::Enumorph;
-use ucs03_zkgm::com::INSTR_VERSION_0;
+use ucs03_zkgm::com::{INSTR_VERSION_0, TAG_ACK_SUCCESS};
 use unionlabs_primitives::Bytes;
 
 use crate::Result;
@@ -12,7 +12,12 @@ pub enum Call {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum CallShape {
-    V0,
+    V0(CallV0Shape),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CallV0Shape {
+    pub eureka: bool,
 }
 
 impl Call {
@@ -25,7 +30,7 @@ impl Call {
 
     pub(crate) fn shape(&self) -> CallShape {
         match self {
-            Call::V0(_) => CallShape::V0,
+            Call::V0(CallV0 { eureka, .. }) => CallShape::V0(CallV0Shape { eureka: *eureka }),
         }
     }
 }
@@ -52,5 +57,36 @@ impl CallV0 {
             contract_address: contract_address.into(),
             contract_calldata: contract_calldata.into(),
         })
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Enumorph)]
+pub enum CallAck {
+    V0(CallAckV0),
+}
+
+impl CallAck {
+    pub(crate) fn decode(shape: CallShape, ack: impl AsRef<[u8]>) -> Result<Self> {
+        match shape {
+            CallShape::V0(shape) => CallAckV0::decode(shape, ack).map(CallAck::V0),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CallAckV0 {
+    NonEureka,
+    Eureka(Bytes),
+}
+
+impl CallAckV0 {
+    pub(crate) fn decode(shape: CallV0Shape, ack: impl AsRef<[u8]>) -> Result<Self> {
+        if shape.eureka {
+            Ok(Self::Eureka(ack.as_ref().into()))
+        } else if ack.as_ref() == TAG_ACK_SUCCESS.to_be_bytes::<32>() {
+            Ok(Self::NonEureka)
+        } else {
+            Err("invalid call v1 eureka ack, expected bytes32(TAG_ACK_SUCCESS)")?
+        }
     }
 }
