@@ -1,16 +1,11 @@
 use std::error::Error;
 
-use alloy_sol_types::SolType;
+use alloy_sol_types::{abi::TokenSeq, SolValue};
 use ucs03_zkgm::com::{TAG_ACK_FAILURE, TAG_ACK_SUCCESS};
 use unionlabs_primitives::{Bytes, H256, U256};
 
 pub use crate::{batch::Batch, call::Call, forward::Forward, root::Root, token_order::TokenOrder};
-use crate::{
-    batch::BatchAck,
-    call::CallAck,
-    root::RootShape,
-    token_order::{TokenOrderAck, TokenOrderShape},
-};
+use crate::{batch::BatchAck, call::CallAck, root::RootShape, token_order::TokenOrderAck};
 
 pub mod batch;
 pub mod call;
@@ -85,6 +80,38 @@ impl Ack {
     }
 }
 
+pub struct Instruction {
+    opcode: u8,
+    version: u8,
+    operand: Bytes,
+}
+
+impl Instruction {
+    pub(crate) fn new<
+        S: for<'a> SolValue<SolType: alloy_sol_types::SolType<Token<'a>: TokenSeq<'a>>>,
+    >(
+        opcode: u8,
+        version: u8,
+        operand: S,
+    ) -> Self {
+        Self {
+            opcode,
+            version,
+            operand: S::abi_encode_params(&operand).into(),
+        }
+    }
+
+    pub(crate) fn encode(self) -> Bytes {
+        ucs03_zkgm::com::Instruction {
+            version: self.version,
+            opcode: self.opcode,
+            operand: self.operand.into(),
+        }
+        .abi_encode_params()
+        .into()
+    }
+}
+
 // pub mod abi {
 //     alloy_sol_types::sol! {
 //         "../../evm/contracts/apps/ucs/03-zkgm/Types.sol"
@@ -146,11 +173,11 @@ mod tests {
     use super::*;
     use crate::{
         batch::{
-            BatchV0, BatchV0Ack, BatchV0Shape, BatchableInstructionV0, BatchableInstructionV0Ack,
-            BatchableInstructionV0Shape,
+            BatchInstructionV0, BatchInstructionV0Ack, BatchInstructionV0Shape, BatchV0,
+            BatchV0Ack, BatchV0Shape,
         },
         call::{CallAckV0, CallShape, CallV0, CallV0Shape},
-        token_order::{TokenOrderV1, TokenOrderV1Ack},
+        token_order::{TokenOrderShape, TokenOrderV1, TokenOrderV1Ack},
     };
 
     #[test]
@@ -166,7 +193,7 @@ mod tests {
             path: U256::ZERO,
             instruction: Root::Batch(Batch::V0(BatchV0 {
                 instructions: vec![
-                    BatchableInstructionV0::TokenOrder(TokenOrder::V1(TokenOrderV1 {
+                    BatchInstructionV0::TokenOrder(TokenOrder::V1(TokenOrderV1 {
                         sender: hex!("15ee7c367f4232241028c36e720803100757c6e9").into(),
                         receiver: b"bbn1m7zr5jw4k9z22r9ajggf4ucalwy7uxvu9gkw6tnsmv42lvjpkwasagek5g"
                             .into(),
@@ -179,7 +206,7 @@ mod tests {
                         quote_token: b"ubbn".into(),
                         quote_amount: U256::from(10000_u64),
                     })),
-                    BatchableInstructionV0::Call(Call::V0(CallV0 {
+                    BatchInstructionV0::Call(Call::V0(CallV0 {
                         sender: hex!("15ee7c367f4232241028c36e720803100757c6e9").into(),
                         eureka: false,
                         contract_address:
@@ -196,8 +223,8 @@ mod tests {
 
         let expected_shape = RootShape::Batch(batch::BatchShape::V0(BatchV0Shape {
             instructions: vec![
-                BatchableInstructionV0Shape::TokenOrder(TokenOrderShape::V1),
-                BatchableInstructionV0Shape::Call(CallShape::V0(CallV0Shape { eureka: false })),
+                BatchInstructionV0Shape::TokenOrder(TokenOrderShape::V1),
+                BatchInstructionV0Shape::Call(CallShape::V0(CallV0Shape { eureka: false })),
             ],
         }));
 
@@ -209,11 +236,30 @@ mod tests {
 
         let expected_ack = Ack::Success(RootAck::Batch(BatchAck::V0(BatchV0Ack {
             instructions: vec![
-                BatchableInstructionV0Ack::TokenOrder(TokenOrderAck::V1(TokenOrderV1Ack::Protocol)),
-                BatchableInstructionV0Ack::Call(CallAck::V0(CallAckV0::NonEureka)),
+                BatchInstructionV0Ack::TokenOrder(TokenOrderAck::V1(TokenOrderV1Ack::Protocol)),
+                BatchInstructionV0Ack::Call(CallAck::V0(CallAckV0::NonEureka)),
             ],
         })));
 
         assert_eq!(ack, expected_ack);
+    }
+
+    #[test]
+    fn decode2() {
+        let packet = hex!("f207bbf484462c38398d9d979c652ad57f2de0efafc950ab6e09395e1cd6ee540000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000005c000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000002e000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000002200000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000de0b6b3a764000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001406627714f3f17a701f7074a12c02847a5d2ca487000000000000000000000000000000000000000000000000000000000000000000000000000000000000001406627714f3f17a701f7074a12c02847a5d2ca4870000000000000000000000000000000000000000000000000000000000000000000000000000000000000014685ce6742351ae9b618f383883d6d1e0c5a31b4b000000000000000000000000000000000000000000000000000000000000000000000000000000000000001480fdbf104ec58a527ec40f7b03f88c404ef4ba6300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000220000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001400000000000000000000000000000000000000000000000000000000000000180000000000000000000000000000000000000000000000000000003310f4c3f5300000000000000000000000000000000000000000000000000000000000001c0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001406627714f3f17a701f7074a12c02847a5d2ca487000000000000000000000000000000000000000000000000000000000000000000000000000000000000001406627714f3f17a701f7074a12c02847a5d2ca4870000000000000000000000000000000000000000000000000000000000000000000000000000000000000014eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee0000000000000000000000000000000000000000000000000000000000000000000000000000000000000014f6e7e2725b40ec8226036906cab0f5dc3722b8e70000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+
+        let ack = hex!("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000");
+
+        let decoded_packet = ZkgmPacket::decode(packet).unwrap();
+
+        dbg!(&decoded_packet);
+
+        let shape = decoded_packet.instruction.shape();
+
+        dbg!(shape);
+
+        let ack = Ack::decode(decoded_packet.instruction.shape(), ack).unwrap();
+
+        dbg!(ack);
     }
 }
